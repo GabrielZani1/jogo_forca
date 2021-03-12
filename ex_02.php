@@ -1,8 +1,10 @@
 <?php
+const PLAYER_UM = 1;
+const PLAYER_DOIS = 2;
 
 iniciaJogoForca();
 
-function iniciaJogoForca() {
+function iniciaJogoForca() {    
     while(true) {          
         $palavra_gerada = gerarPalavra();
         $palavra_formada = mascaraPalavra($palavra_gerada['palavra']);
@@ -14,26 +16,25 @@ function iniciaJogoForca() {
         $cad_palavra = "";        
         $opcao_menu = 0;
         $ret_cad_grupo = 0;
-        $ret_cad_palavra = 0;       
-        $play_1 = 1;
-        $play_2 = 0;
+        $ret_cad_palavra = 0;                     
         $vida_play_1 = 7;
         $vida_play_2 = 7;
+        $player = PLAYER_UM;  
 
-        system('clear');
+        system('clear');                
         echo "BEM VINDO AO JOGO DA FORCA!\nPara iniciar a partida digite '1'\nPara cadastrar uma palavra digite '2'\nPara cadastrar um grupo de palavra digite '3'\nPara fechar o jogo precione qualquer tecla\n";
         $opcao_menu = (int) readline(""); 
 
-        if (isset($opcao_menu) && $opcao_menu == 1) {    
+        if ($opcao_menu == 1) {    
             while ($palavra_formada != $palavra_gerada['palavra']) {                                                   
                 $palavra_final = $palavra_formada;
                 $palavra_formada = ""; 
                 $contar_erro = 1; 
 
-                if ($play_1 && !$play_2) {
-                    $vida = $vida_play_1;
-                } else {
-                    $vida = $vida_play_2;
+                if ($player == PLAYER_UM) {                    
+                    $vida = $vida_play_1;                    
+                } else {                    
+                    $vida = $vida_play_2;                    
                 }
                 if ($vida_play_1 > 0 || $vida_play_2 > 0) {
                     system('clear');            
@@ -42,12 +43,8 @@ function iniciaJogoForca() {
                     foreach ($palavras_ditas as $pd) {
                         echo $pd;
                     }
-                    echo "\n-------------------------------------------------------------------------------------\n";                    
-                    if ($play_1 && !$play_2) {
-                        echo "VEZ DO JOGADOR 1!\n\n\n";                    
-                    } else {
-                        echo "VEZ DO JOGADOR 2!\n\n\n";                        
-                    }
+                    echo "\n-------------------------------------------------------------------------------------\n"; 
+                    echo "VEZ DO JOGADOR ".$player."!\n\n\n";
                     echo " ".$palavra_final;             
                     desenhoForca($vida);
 
@@ -77,52 +74,36 @@ function iniciaJogoForca() {
                     }
 
                     if ($contar_erro) {
-                        if ($play_1 && !$play_2) {
+                        if ($player == PLAYER_UM) {
                             $vida_play_1 --;
-                            $play_1 = 0;
-                            $play_2 = 1;                            
+                            $player = PLAYER_DOIS;                                                      
                         } else {
                             $vida_play_2 --;
-                            $play_1 = 1;
-                            $play_2 = 0;                            
+                            $player = PLAYER_UM;                      
                         }                        
                     }                      
                     $ganhou = 1;                                      
                 } else {
-                    system('clear');
-                    if ($vida_play_1 == 0) {
-                        echo "-------------------------------------------------------------------------------------\n";
-                        echo "|                          Jogador 1 Gamer Over :(                                  |\n";
-                        echo "-------------------------------------------------------------------------------------\n";
-                        echo "|Você perdeu, a palavra gerada era: ".$palavra_gerada['palavra']."                   \n"; 
-                        echo "-------------------------------------------------------------------------------------\n\n";
-                        $ganhou = 0;
-                    }
+                    system('clear');                    
+                    echo "-------------------------------------------------------------------------------------\n";
+                    echo "|                       Gamer Over :( 'Jogador 1 e Jogador 2'                       |\n";
+                    echo "-------------------------------------------------------------------------------------\n";
+                    echo "|Você perdeu, a palavra gerada era: ".$palavra_gerada['palavra']."                   \n"; 
+                    echo "-------------------------------------------------------------------------------------\n\n";
+                    $ganhou = 0;
 
-                    if ($vida_play_2 == 0) {                        
-                        echo "-------------------------------------------------------------------------------------\n";
-                        echo "|                          Jogador 2 Gamer Over :(                                  |\n";
-                        echo "-------------------------------------------------------------------------------------\n";
-                        echo "|Você perdeu, a palavra gerada era: ".$palavra_gerada['palavra']."                   \n"; 
-                        echo "-------------------------------------------------------------------------------------\n\n";
-                        $ganhou = 0;
-                    }                                    
                     readline("Para voltar ao Menu Principal precione qualquer tecla! ");
                     break;
                 }                     
             } 
 
             if ($ganhou) {
-                system('clear');                
-                if ($play_1 && !$play_2) {
-                    echo "Parabéns Jogador 1 Você Ganhou :)\n";
-                } else {
-                    echo "Parabéns Jogador 2 Você Ganhou :)\n";
-                }
+                system('clear');                                
+                echo "Parabéns Jogador ".$player." Você Ganhou :)\n";
                 echo "A palavra gerada era: ".$palavra_gerada['palavra']."\n";
                 readline("Para voltar ao Menu Principal precione qualquer tecla! ");                
             }
-        } elseif (isset($opcao_menu) && $opcao_menu == 2) {            
+        } elseif ($opcao_menu == 2) {            
             while (empty($cad_palavra) && !$ret_cad_palavra) {
                 system('clear');
                 echo "|---------------------------------------------------------|\n";
@@ -152,7 +133,7 @@ function iniciaJogoForca() {
                     }           
                 }
             }
-        } elseif (isset($opcao_menu) && $opcao_menu == 3) {
+        } elseif ($opcao_menu == 3) {
             while (empty($cad_grupo) && !$ret_cad_grupo) {
                 system('clear');
                 echo "|---------------------------------------------------------|\n";
